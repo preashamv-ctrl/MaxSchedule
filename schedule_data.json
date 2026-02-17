@@ -1,0 +1,234 @@
+[
+  {
+    "id": "evt_1",
+    "title": "Prep Redzone \u2013 Tulsa, OK",
+    "start": "2026-02-27",
+    "end": "2026-03-01",
+    "category": "Warren 7v7",
+    "location": "Prep Redzone \u2013 Tulsa, OK"
+  },
+  {
+    "id": "evt_2",
+    "title": "MOKAN \u2013 Kansas City",
+    "start": "2026-03-07",
+    "end": "2026-03-08",
+    "category": "Warren 7v7",
+    "location": "MOKAN \u2013 Kansas City"
+  },
+  {
+    "id": "evt_3",
+    "title": "Sioux Center Spectacular \u2013 IA",
+    "start": "2026-03-07",
+    "end": "2026-03-08",
+    "category": "TNT 7v7",
+    "location": "Sioux Center Spectacular \u2013 IA"
+  },
+  {
+    "id": "evt_4",
+    "title": "Super Regional \u2013 Memphis",
+    "start": "2026-03-07",
+    "end": "2026-03-08",
+    "category": "Kingdom",
+    "location": "Super Regional \u2013 Memphis"
+  },
+  {
+    "id": "evt_5",
+    "title": "Wild Wild West \u2013 Council Bluffs",
+    "start": "2026-03-14",
+    "end": "2026-03-15",
+    "category": "TNT 7v7",
+    "location": "Wild Wild West \u2013 Council Bluffs"
+  },
+  {
+    "id": "evt_6",
+    "title": "Springfield, MO",
+    "start": "2026-03-21",
+    "end": "2026-03-22",
+    "category": "Warren 7v7",
+    "location": "Springfield, MO"
+  },
+  {
+    "id": "evt_7",
+    "title": "Capital City Clash \u2013 Des Moines",
+    "start": "2026-03-21",
+    "end": "2026-03-22",
+    "category": "TNT 7v7",
+    "location": "Capital City Clash \u2013 Des Moines"
+  },
+  {
+    "id": "evt_8",
+    "title": "Omaha",
+    "start": "2026-03-28",
+    "end": "2026-03-29",
+    "category": "Warren 7v7",
+    "location": "Omaha"
+  },
+  {
+    "id": "evt_9",
+    "title": "March Mayhem \u2013 Council Bluffs",
+    "start": "2026-03-28",
+    "end": "2026-03-29",
+    "category": "TNT 7v7",
+    "location": "March Mayhem \u2013 Council Bluffs"
+  },
+  {
+    "id": "evt_10",
+    "title": "Brazil Tour",
+    "start": "2026-03-31",
+    "end": "2026-04-07",
+    "category": "International / Camp",
+    "location": "Brazil Tour"
+  },
+  {
+    "id": "evt_11",
+    "title": "Siouxland Shootout \u2013 Sioux City",
+    "start": "2026-04-11",
+    "end": "2026-04-12",
+    "category": "TNT 7v7",
+    "location": "Siouxland Shootout \u2013 Sioux City"
+  },
+  {
+    "id": "evt_12",
+    "title": "Spring Meltdown \u2013 Omaha/CB",
+    "start": "2026-04-11",
+    "end": "2026-04-12",
+    "category": "UA Future",
+    "location": "Spring Meltdown \u2013 Omaha/CB"
+  },
+  {
+    "id": "evt_13",
+    "title": "Midwest Regionals \u2013 IL",
+    "start": "2026-04-17",
+    "end": "2026-04-19",
+    "category": "UA Future",
+    "location": "Midwest Regionals \u2013 IL"
+  },
+  {
+    "id": "evt_14",
+    "title": "Kingdom Session 1",
+    "start": "2026-04-17",
+    "end": "2026-04-19",
+    "category": "Kingdom",
+    "location": "Kingdom Session 1"
+  },
+  {
+    "id": "evt_15",
+    "title": "H Town Showdown \u2013 Omaha",
+    "start": "2026-04-25",
+    "end": "2026-04-26",
+    "category": "TNT 7v7",
+    "location": "H Town Showdown \u2013 Omaha"
+  },
+  {
+    "id": "evt_16",
+    "title": "Back to Ballin \u2013 Cedar Falls",
+    "start": "2026-05-02",
+    "end": "2026-05-03",
+    "category": "TNT 7v7",
+    "location": "Back to Ballin \u2013 Cedar Falls"
+  },
+  {
+    "id": "evt_17",
+    "title": "UA Future \u2013 Lawrence, KS",
+    "start": "2026-05-02",
+    "end": "2026-05-03",
+    "category": "UA Future",
+    "location": "UA Future \u2013 Lawrence, KS"
+  },
+  {
+    "id": "evt_18",
+    "title": "Memorial Stadium \u2013 Lincoln",
+    "start": "2026-05-09",
+    "end": "2026-05-10",
+    "category": "TNT 7v7",
+    "location": "Memorial Stadium \u2013 Lincoln"
+  },
+  {
+    "id": "evt_19",
+    "title": "Kingdom Session 2",
+    "start": "2026-05-09",
+    "end": "2026-05-10",
+    "category": "Kingdom",
+    "location": "Kingdom Session 2"
+  },
+  {
+    "id": "evt_20",
+    "title": "Dave Felici \u2013 Bellevue",
+    "start": "2026-05-15",
+    "end": "2026-05-15",
+    "category": "UA Future",
+    "location": "Dave Felici \u2013 Bellevue"
+  },
+  {
+    "id": "evt_21",
+    "title": "Las Vegas Session",
+    "start": "2026-05-15",
+    "end": "2026-05-15",
+    "category": "Kingdom",
+    "location": "Las Vegas Session"
+  },
+  {
+    "id": "evt_22",
+    "title": "Colorado Football Camp",
+    "start": "2026-06-09",
+    "end": "2026-06-10",
+    "category": "International / Camp",
+    "location": "Colorado Football Camp"
+  },
+  {
+    "id": "evt_23",
+    "title": "Spain Championships \u2013 Barcelona",
+    "start": "2026-06-17",
+    "end": "2026-06-22",
+    "category": "International / Camp",
+    "location": "Spain Championships \u2013 Barcelona"
+  },
+  {
+    "id": "evt_24",
+    "title": "UA Finals \u2013 Ohio",
+    "start": "2026-06-19",
+    "end": "2026-06-21",
+    "category": "UA Future",
+    "location": "UA Finals \u2013 Ohio"
+  },
+  {
+    "id": "evt_25",
+    "title": "River Cities \u2013 Omaha",
+    "start": "2026-07-03",
+    "end": "2026-07-05",
+    "category": "UA Future",
+    "location": "River Cities \u2013 Omaha"
+  },
+  {
+    "id": "evt_26",
+    "title": "JR Nike Championship \u2013 Augusta",
+    "start": "2026-07-08",
+    "end": "2026-07-12",
+    "category": "Kingdom",
+    "location": "JR Nike Championship \u2013 Augusta"
+  },
+  {
+    "id": "evt_27",
+    "title": "State Championships \u2013 Iowa City",
+    "start": "2026-07-17",
+    "end": "2026-07-19",
+    "category": "TNT 7v7",
+    "location": "State Championships \u2013 Iowa City"
+  },
+  {
+    "id": "evt_28",
+    "title": "July Jam \u2013 Omaha",
+    "start": "2026-07-17",
+    "end": "2026-07-19",
+    "category": "UA Future",
+    "location": "July Jam \u2013 Omaha"
+  },
+  {
+    "id": "evt_29",
+    "title": "MAYB Nationals \u2013 Wichita",
+    "start": "2026-07-30",
+    "end": "2026-08-01",
+    "category": "UA Future",
+    "location": "MAYB Nationals \u2013 Wichita"
+  }
+]
