@@ -2,6 +2,7 @@
 // State Management
 const State = {
     events: [],
+    categories: [], // List of category strings
     currentView: 'list', // 'list' or 'calendar'
     currentMonth: new Date(2026, 0, 1), // Start at Jan 2026
     filters: {
@@ -16,20 +17,37 @@ const Elements = {
     calendarViewBtn: document.getElementById('calendarViewBtn'),
     listView: document.getElementById('listView'),
     calendarView: document.getElementById('calendarView'),
-    eventsList: document.getElementById('eventsList'),
-    searchInput: document.getElementById('searchInput'),
-    categoryFilter: document.getElementById('categoryFilter'),
     calendarGrid: document.getElementById('calendarGrid'),
     currentMonthYear: document.getElementById('currentMonthYear'),
     prevMonthBtn: document.getElementById('prevMonth'),
     nextMonthBtn: document.getElementById('nextMonth'),
+
+    // Stats
+    totalEventsCount: document.getElementById('totalEventsCount'),
+    attendingCount: document.getElementById('attendingCount'),
+
+    // Filters & Search
+    searchInput: document.getElementById('searchInput'),
+    categoryFiltersContainer: document.getElementById('categoryFilters'),
+
+    // Event Modal
     addEventBtn: document.getElementById('addEventBtn'),
     eventModal: document.getElementById('eventModal'),
-    closeModal: document.querySelector('.close-modal'),
+    closeModal: document.querySelector('#eventModal .close-modal'),
     cancelBtn: document.getElementById('cancelBtn'),
     eventForm: document.getElementById('eventForm'),
-    totalEventsCount: document.getElementById('totalEventsCount'),
-    attendingCount: document.getElementById('attendingCount')
+
+    // Category Modal
+    manageCategoriesBtn: document.getElementById('manageCategoriesBtn'),
+    categoryModal: document.getElementById('categoryModal'),
+    closeCategoryModal: document.getElementById('closeCategoryModal'),
+    closeCategoryBtn: document.getElementById('closeCategoryBtn'),
+    newCategoryInput: document.getElementById('newCategoryInput'),
+    addNewCategoryBtn: document.getElementById('addNewCategoryBtn'),
+    categoryListManager: document.getElementById('categoryListManager'),
+
+    // Forms
+    eventCategorySelect: document.getElementById('eventCategory')
 };
 
 // Initialization
@@ -41,29 +59,42 @@ function init() {
 }
 
 function loadData() {
-    // Load from localStorage or use initial data
+    // Load Events
     const storedEvents = localStorage.getItem('scheduleEvents');
     if (storedEvents) {
         State.events = JSON.parse(storedEvents);
     } else {
-        // defined in data.js
         if (typeof initialData !== 'undefined') {
             State.events = [...initialData];
-            // Add 'attending' property if missing
-            State.events.forEach(evt => {
-                if (typeof evt.attending === 'undefined') {
-                    evt.attending = false;
-                }
+            // Add 'attending' and unique ID if missing
+            State.events.forEach((evt, idx) => {
+                if (typeof evt.attending === 'undefined') evt.attending = false;
+                if (!evt.id) evt.id = `evt_${idx}`;
             });
             saveData();
         }
     }
-}
 
+    // Load Categories
+    const storedCategories = localStorage.getItem('scheduleCategories');
+    if (storedCategories) {
+        State.categories = JSON.parse(storedCategories);
+    } else {
+        // Derive from events initially if not saved
+        const derived = [...new Set(State.events.map(e => e.category))].filter(Boolean).sort();
+        State.categories = derived;
+        saveCategories();
+    }
+}
 
 function saveData() {
     localStorage.setItem('scheduleEvents', JSON.stringify(State.events));
     updateStats();
+}
+
+function saveCategories() {
+    localStorage.setItem('scheduleCategories', JSON.stringify(State.categories));
+    renderMatrixFilters();
 }
 
 function updateStats() {
@@ -76,29 +107,32 @@ function setupEventListeners() {
     Elements.listViewBtn.addEventListener('click', () => switchView('list'));
     Elements.calendarViewBtn.addEventListener('click', () => switchView('calendar'));
 
-    // Filters
+    // Search
     Elements.searchInput.addEventListener('input', (e) => {
         State.filters.search = e.target.value.toLowerCase();
         renderMatrixView();
     });
 
-    // Matrix Filters delegated in renderMatrixFilters
-
     // Calendar Navigation
     Elements.prevMonthBtn.addEventListener('click', () => changeMonth(-1));
     Elements.nextMonthBtn.addEventListener('click', () => changeMonth(1));
 
-    // Modal
+    // Event Modal
     Elements.addEventBtn.addEventListener('click', () => openModal());
     Elements.closeModal.addEventListener('click', closeModal);
     Elements.cancelBtn.addEventListener('click', closeModal);
     Elements.eventForm.addEventListener('submit', handleFormSubmit);
 
-    // Close modal on outside click
+    // Category Modal
+    Elements.manageCategoriesBtn.addEventListener('click', openCategoryModal);
+    Elements.closeCategoryModal.addEventListener('click', closeCategoryModal);
+    Elements.closeCategoryBtn.addEventListener('click', closeCategoryModal);
+    Elements.addNewCategoryBtn.addEventListener('click', addNewCategory);
+
+    // Close modals on outside click
     window.addEventListener('click', (e) => {
-        if (e.target === Elements.eventModal) {
-            closeModal();
-        }
+        if (e.target === Elements.eventModal) closeModal();
+        if (e.target === Elements.categoryModal) closeCategoryModal();
     });
 }
 
@@ -119,123 +153,58 @@ function switchView(view) {
     }
 }
 
-// Deprecated old List View Logic
-// function getFilteredEvents() {
-//     return State.events.filter(event => {
-//         const matchesSearch = event.title.toLowerCase().includes(State.filters.search) ||
-//             event.location.toLowerCase().includes(State.filters.search);
-//         const matchesCategory = State.filters.category === 'all' || event.category === State.filters.category;
-//         return matchesSearch && matchesCategory;
-//     }).sort((a, b) => new Date(a.start) - new Date(b.start));
-// }
+// --- Category Management ---
 
-function getConflicts(event) {
-    return State.events.filter(e => {
-        if (e.id === event.id) return false; // Don't compare with self
-        // Check overlap: StartA <= EndB && EndA >= StartB
-        const overlap = event.start <= e.end && event.end >= e.start;
-        return overlap;
+function openCategoryModal() {
+    renderCategoryListManager();
+    Elements.categoryModal.style.display = 'flex';
+}
+
+function closeCategoryModal() {
+    Elements.categoryModal.style.display = 'none';
+    // Re-render filters in case categories changed
+    renderMatrixFilters();
+    renderMatrixView();
+}
+
+function renderCategoryListManager() {
+    Elements.categoryListManager.innerHTML = '';
+    State.categories.forEach(cat => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+            <span>${cat}</span>
+            <button class="btn-icon delete" onclick="deleteCategory('${cat}')" title="Delete">🗑️</button>
+        `;
+        Elements.categoryListManager.appendChild(li);
     });
 }
 
-// Deprecated old List View Logic
-// function renderListView() {
-//     Elements.eventsList.innerHTML = '';
-//     const filteredEvents = getFilteredEvents();
-
-//     if (filteredEvents.length === 0) {
-//         Elements.eventsList.innerHTML = '<p style="text-align:center; color: var(--text-muted);">No events found.</p>';
-//         return;
-//     }
-
-//     filteredEvents.forEach(event => {
-//         const card = document.createElement('div');
-//         const conflicts = getConflicts(event);
-//         const isConflicting = conflicts.length > 0;
-//         const attendingConflict = conflicts.some(c => c.attending);
-
-//         let conflictMsg = '';
-//         if (isConflicting) {
-//             const conflictNames = conflicts.map(c => c.title).join(', ');
-//             conflictMsg = `<div class="conflict-warning" title="Conflicts with: ${conflictNames}">⚠️ Conflicts with ${conflicts.length} event(s)</div>`;
-//         }
-
-//         card.className = `event-card ${event.attending ? 'attending' : ''} ${event.attending && attendingConflict ? 'conflict-active' : ''}`;
-
-//         // Make entire card clickable for attendance
-//         card.onclick = (e) => {
-//             // Prevent triggering when clicking buttons directly
-//             if (e.target.tagName === 'BUTTON') return;
-//             toggleAttendance(event.id);
-//         };
-
-//         const dateStr = formatDateRange(event.start, event.end);
-
-//         card.innerHTML = `
-//             <div class="event-info">
-//                 <div class="event-header">
-//                     <h4>${event.title}</h4>
-//                     ${conflictMsg}
-//                 </div>
-//                 <p><strong>Date:</strong> ${dateStr}</p>
-//                 <p><strong>Category:</strong> ${event.category}</p>
-//                 <p><strong>Location:</strong> ${event.location}</p>
-//             </div>
-//             <div class="event-actions">
-//                 <button class="btn ${event.attending ? 'secondary' : 'primary'}" onclick="event.stopPropagation(); toggleAttendance('${event.id}')">
-//                     ${event.attending ? 'Attending' : 'Attend'}
-//                 </button>
-//                 <button class="btn secondary" onclick="event.stopPropagation(); editEvent('${event.id}')">Edit</button>
-//             </div>
-//         `;
-//         Elements.eventsList.appendChild(card);
-//     });
-//     updateStats();
-// }
-
-// Deprecated old List View Logic
-// function populateCategoryFilter() {
-//     const categories = [...new Set(State.events.map(e => e.category))].filter(Boolean).sort();
-//     const datalist = document.getElementById('categoryList');
-
-//     // Clear existing
-//     while (Elements.categoryFilter.options.length > 1) {
-//         Elements.categoryFilter.remove(1);
-//     }
-//     datalist.innerHTML = '';
-
-//     categories.forEach(cat => {
-//         // Filter dropdown
-//         const option = document.createElement('option');
-//         option.value = cat;
-//         option.textContent = cat;
-//         Elements.categoryFilter.appendChild(option);
-
-//         // Datalist for form
-//         const dlOption = document.createElement('option');
-//         dlOption.value = cat;
-//         datalist.appendChild(dlOption);
-//     });
-// }
-
-// Matrix View Logic
-function getUniqueCategories() {
-    return [...new Set(State.events.map(e => e.category))].filter(Boolean).sort();
+function addNewCategory() {
+    const name = Elements.newCategoryInput.value.trim();
+    if (name && !State.categories.includes(name)) {
+        State.categories.push(name);
+        State.categories.sort();
+        saveCategories();
+        Elements.newCategoryInput.value = '';
+        renderCategoryListManager();
+    }
 }
 
-function getUniqueDates() {
-    // Get all unique start dates, sorted
-    const dates = [...new Set(State.events.map(e => e.start))].sort();
-    return dates;
-}
+window.deleteCategory = function (catName) {
+    if (confirm(`Delete category "${catName}"? Events with this category will remain but the category will be removed from the list.`)) {
+        State.categories = State.categories.filter(c => c !== catName);
+        saveCategories();
+        renderCategoryListManager();
+    }
+};
+
+// --- Matrix View Logic ---
 
 function renderMatrixFilters() {
-    const container = document.getElementById('categoryFilters');
-    container.innerHTML = '';
+    Elements.categoryFiltersContainer.innerHTML = '';
 
-    const categories = getUniqueCategories();
-
-    categories.forEach(cat => {
+    // Use stored categories
+    State.categories.forEach(cat => {
         const bg = categoryColor(cat);
         const label = document.createElement('label');
         label.className = 'toggle-btn';
@@ -252,17 +221,17 @@ function renderMatrixFilters() {
             } else {
                 State.filters.categories.delete(cat);
             }
-            // If all unchecked, treat as ALL
-            if (State.filters.categories.size === 0) {
-                // visual feedback?
-            }
             renderMatrixView();
         });
 
         label.appendChild(checkbox);
         label.appendChild(document.createTextNode(cat));
-        container.appendChild(label);
+        Elements.categoryFiltersContainer.appendChild(label);
     });
+}
+
+function getUniqueDates() {
+    return [...new Set(State.events.map(e => e.start))].sort();
 }
 
 // Deterministic color generator for categories
@@ -275,6 +244,15 @@ function categoryColor(str) {
     return `hsl(${hue}, 70%, 90%)`;
 }
 
+// Helper to determine conflict
+function getConflicts(event) {
+    return State.events.filter(e => {
+        if (e.id === event.id) return false;
+        const overlap = event.start <= e.end && event.end >= e.start;
+        return overlap;
+    });
+}
+
 function renderMatrixView() {
     const tableHead = document.getElementById('matrixHeader');
     const tableBody = document.getElementById('matrixBody');
@@ -282,11 +260,10 @@ function renderMatrixView() {
     tableHead.innerHTML = '';
     tableBody.innerHTML = '';
 
-    const categories = getUniqueCategories();
     const dates = getUniqueDates();
 
-    // Effective categories to show
-    const activeCategories = categories.filter(cat =>
+    // Effective categories to show (based on State.categories AND filters)
+    const activeCategories = State.categories.filter(cat =>
         State.filters.categories.size === 0 || State.filters.categories.has(cat)
     );
 
@@ -302,42 +279,47 @@ function renderMatrixView() {
 
     // Data Rows
     dates.forEach(dateStart => {
-        // Check if any event in this row matches search
-        // Also check if we should even show this row based on category filter? 
-        // Yes, if it has events in active categories.
-
         const eventsOnDate = State.events.filter(e => e.start === dateStart);
 
         // Filter by search
         const searchInput = State.filters.search;
-        const matchingEvents = eventsOnDate.filter(e =>
-            e.title.toLowerCase().includes(searchInput) ||
-            e.location.toLowerCase().includes(searchInput)
-        );
+        // Optimization: check if ANY event on this date matches search
+        // But we actually need to filter individual cells
 
-        if (searchInput && matchingEvents.length === 0) return;
+        // Note: We only want to show this row if there is at least one visible event
+        // OR checks against active categories?
+        // Let's iterate all active categories and see if we have content.
+
+        let rowHasContent = false;
+        const rowCells = [];
+
+        activeCategories.forEach(cat => {
+            const eventsInCell = eventsOnDate.filter(e => e.category === cat);
+            const matchingEvents = eventsInCell.filter(e =>
+                !searchInput ||
+                e.title.toLowerCase().includes(searchInput) ||
+                e.location.toLowerCase().includes(searchInput)
+            );
+
+            if (matchingEvents.length > 0) rowHasContent = true;
+            rowCells.push({ cat, events: matchingEvents });
+        });
+
+        if (!rowHasContent && searchInput) return; // Skip empty rows during search
 
         const tr = document.createElement('tr');
 
         // Date Cell
         const dateCell = document.createElement('td');
         dateCell.className = 'date-cell';
-        // Find one event to get the end date for display
         const sampleEvent = eventsOnDate[0];
         dateCell.textContent = formatDateRange(sampleEvent.start, sampleEvent.end);
         tr.appendChild(dateCell);
 
         // Category Cells
-        activeCategories.forEach(cat => {
+        rowCells.forEach(cellData => {
             const td = document.createElement('td');
-            const eventsInCell = eventsOnDate.filter(e => e.category === cat);
-
-            eventsInCell.forEach(event => {
-                // Check matches search
-                if (searchInput && !event.title.toLowerCase().includes(searchInput) && !event.location.toLowerCase().includes(searchInput)) {
-                    return;
-                }
-
+            cellData.events.forEach(event => {
                 const conflicts = getConflicts(event);
                 const isConflicting = conflicts.length > 0;
                 const attendingConflict = conflicts.some(c => c.attending);
@@ -369,7 +351,8 @@ function renderMatrixView() {
     updateStats();
 }
 
-// Calendar View Logic
+// --- Calendar View Logic ---
+
 function changeMonth(delta) {
     State.currentMonth.setMonth(State.currentMonth.getMonth() + delta);
     renderCalendarView();
@@ -385,27 +368,26 @@ function renderCalendarView() {
     const firstDay = new Date(year, month, 1).getDay();
     const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-    // Previous month filler
     for (let i = 0; i < firstDay; i++) {
         const dayCell = document.createElement('div');
         dayCell.className = 'calendar-day other-month';
         Elements.calendarGrid.appendChild(dayCell);
     }
 
-    // Days
     for (let day = 1; day <= daysInMonth; day++) {
         const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
         const dayCell = document.createElement('div');
         dayCell.className = 'calendar-day';
-
         dayCell.innerHTML = `<span class="day-number">${day}</span>`;
 
-        // Find events on this day
         const eventsOnDay = State.events.filter(e => {
             return dateStr >= e.start && dateStr <= e.end;
         });
 
         eventsOnDay.forEach(event => {
+            // Only show if category exists in our managed list (optional? let's filter)
+            if (!State.categories.includes(event.category)) return;
+
             const conflicts = getConflicts(event);
             const isConflicting = conflicts.length > 0;
             const attendingConflict = conflicts.some(c => c.attending);
@@ -419,7 +401,6 @@ function renderCalendarView() {
             eventEl.textContent = event.title;
             eventEl.title = `${event.title} (${event.location})`;
 
-            // Click to toggle attendance
             eventEl.onclick = (e) => {
                 e.stopPropagation();
                 toggleAttendance(event.id);
@@ -432,12 +413,12 @@ function renderCalendarView() {
     }
 }
 
-// Event Actions
+// --- Event Actions ---
+
 window.toggleAttendance = function (id) {
     const event = State.events.find(e => e.id === id);
     if (!event) return;
 
-    // If we are turning it ON, warn about conflicts?
     if (!event.attending) {
         const conflicts = getConflicts(event);
         const attendingConflicts = conflicts.filter(c => c.attending);
@@ -460,9 +441,20 @@ window.editEvent = function (id) {
     }
 };
 
-// Modal Logic
+// --- Modal Logic ---
+
 function openModal(event = null) {
     Elements.eventModal.style.display = 'flex';
+
+    // Populate Category Dropdown
+    Elements.eventCategorySelect.innerHTML = '';
+    State.categories.forEach(cat => {
+        const option = document.createElement('option');
+        option.value = cat;
+        option.textContent = cat;
+        Elements.eventCategorySelect.appendChild(option);
+    });
+
     if (event) {
         document.getElementById('modalTitle').textContent = 'Edit Event';
         document.getElementById('eventId').value = event.id;
@@ -492,13 +484,11 @@ function handleFormSubmit(e) {
     const location = document.getElementById('eventLocation').value;
 
     if (id) {
-        // Edit existing
         const event = State.events.find(e => e.id === id);
         if (event) {
             Object.assign(event, { title, category, start, end, location });
         }
     } else {
-        // Add new
         const newEvent = {
             id: 'evt_' + Date.now(),
             title,
@@ -506,14 +496,13 @@ function handleFormSubmit(e) {
             start,
             end,
             location,
-            attending: true // Default to attending if creating it?
+            attending: true
         };
         State.events.push(newEvent);
     }
 
     saveData();
     closeModal();
-    populateCategoryFilter(); // In case of new category
     render();
 }
 
@@ -526,11 +515,9 @@ function formatDateRange(start, end) {
     if (start === end) {
         return s.toLocaleDateString('en-US', options);
     }
-
     if (s.getMonth() === e.getMonth()) {
         return `${s.toLocaleDateString('en-US', { month: 'short' })} ${s.getDate()}–${e.getDate()}`;
     }
-
     return `${s.toLocaleDateString('en-US', options)} – ${e.toLocaleDateString('en-US', options)}`;
 }
 

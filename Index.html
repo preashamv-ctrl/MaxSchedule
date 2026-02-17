@@ -17,11 +17,12 @@
         <div class="header-content">
             <h1>2026 Master Schedule</h1>
             <div class="header-actions">
+                <button id="manageCategoriesBtn" class="btn secondary">Manage Categories</button>
                 <button id="addEventBtn" class="btn primary">+ Add Event</button>
             </div>
         </div>
         <nav class="view-switcher">
-            <button id="listViewBtn" class="active">List View</button>
+            <button id="listViewBtn" class="active">Matrix View</button>
             <button id="calendarViewBtn">Calendar View</button>
         </nav>
     </header>
@@ -84,7 +85,7 @@
         </div>
     </main>
 
-    <!-- Modal -->
+    <!-- Event Modal -->
     <div id="eventModal" class="modal">
         <div class="modal-content">
             <span class="close-modal">&times;</span>
@@ -97,10 +98,9 @@
                 </div>
                 <div class="form-group">
                     <label for="eventCategory">Category</label>
-                    <input type="text" id="eventCategory" list="categoryList" required>
-                    <datalist id="categoryList">
+                    <select id="eventCategory" required>
                         <!-- Populated by JS -->
-                    </datalist>
+                    </select>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
@@ -124,6 +124,25 @@
         </div>
     </div>
 
+    <!-- Category Management Modal -->
+    <div id="categoryModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeCategoryModal">&times;</span>
+            <h2>Manage Categories</h2>
+            <div class="category-manager">
+                <div class="add-category-row">
+                    <input type="text" id="newCategoryInput" placeholder="New category name">
+                    <button id="addNewCategoryBtn" class="btn primary">Add</button>
+                </div>
+                <ul id="categoryListManager" class="category-list-manager">
+                    <!-- Populated by JS -->
+                </ul>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn secondary" id="closeCategoryBtn">Close</button>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
