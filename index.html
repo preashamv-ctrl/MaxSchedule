@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026 Master Schedule</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- Load initial data -->
+    <script src="data.js"></script>
+    <!-- Load application logic -->
+    <script src="script.js" defer></script>
+</head>
+
+<body>
+    <header>
+        <div class="header-content">
+            <h1>2026 Master Schedule</h1>
+            <div class="header-actions">
+                <button id="manageCategoriesBtn" class="btn secondary">Manage Categories</button>
+                <button id="addEventBtn" class="btn primary">+ Add Event</button>
+            </div>
+        </div>
+        <nav class="view-switcher">
+            <button id="listViewBtn" class="active">Matrix View</button>
+            <button id="calendarViewBtn">Calendar View</button>
+        </nav>
+    </header>
+
+    <main>
+        <div id="dashboardStats" class="stats-container">
+            <div class="stat-card">
+                <h3>Total Events</h3>
+                <p id="totalEventsCount">0</p>
+            </div>
+            <div class="stat-card">
+                <h3>Attending</h3>
+                <p id="attendingCount">0</p>
+            </div>
+        </div>
+
+        <div id="listView" class="view-container active">
+            <div class="controls-bar">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Search events..." />
+                </div>
+                <div class="filter-group">
+                    <label>Filter Categories:</label>
+                    <div id="categoryFilters" class="category-toggles">
+                        <!-- Checkboxes populated by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="matrix-container">
+                <table id="scheduleMatrix">
+                    <thead id="matrixHeader">
+                        <!-- Dates + Category Columns -->
+                    </thead>
+                    <tbody id="matrixBody">
+                        <!-- Calendar rows -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="calendarView" class="view-container">
+            <div class="calendar-header">
+                <button id="prevMonth">&lt;</button>
+                <h2 id="currentMonthYear">January 2026</h2>
+                <button id="nextMonth">&gt;</button>
+            </div>
+            <div class="calendar-grid-header">
+                <div>Sun</div>
+                <div>Mon</div>
+                <div>Tue</div>
+                <div>Wed</div>
+                <div>Thu</div>
+                <div>Fri</div>
+                <div>Sat</div>
+            </div>
+            <div id="calendarGrid" class="calendar-grid">
+                <!-- Calendar days populated here -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Event Modal -->
+    <div id="eventModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 id="modalTitle">Add Event</h2>
+            <form id="eventForm">
+                <input type="hidden" id="eventId">
+                <div class="form-group">
+                    <label for="eventTitle">Event Name</label>
+                    <input type="text" id="eventTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="eventCategory">Category</label>
+                    <select id="eventCategory" required>
+                        <!-- Populated by JS -->
+                    </select>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="eventStart">Start Date</label>
+                        <input type="date" id="eventStart" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="eventEnd">End Date</label>
+                        <input type="date" id="eventEnd" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="eventLocation">Location</label>
+                    <input type="text" id="eventLocation">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn secondary" id="cancelBtn">Cancel</button>
+                    <button type="submit" class="btn primary">Save Event</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Category Management Modal -->
+    <div id="categoryModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeCategoryModal">&times;</span>
+            <h2>Manage Categories</h2>
+            <div class="category-manager">
+                <div class="add-category-row">
+                    <input type="text" id="newCategoryInput" placeholder="New category name">
+                    <button id="addNewCategoryBtn" class="btn primary">Add</button>
+                </div>
+                <ul id="categoryListManager" class="category-list-manager">
+                    <!-- Populated by JS -->
+                </ul>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn secondary" id="closeCategoryBtn">Close</button>
+            </div>
+        </div>
+    </div>
+    <footer style="text-align: center; padding: 1rem; color: #888; font-size: 0.8rem;">
+        v1.1 - Category Management Enabled
+    </footer>
+</body>
+
+</html>
