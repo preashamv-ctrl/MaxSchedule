@@ -1,202 +1,295 @@
 // 2026 Master Sports Calendar
-// Fully Updated Version
+// Fully Updated Version — formatted for script.js consumption
 
-export const programs = {
-  warren: { id: "warren", name: "Warren 7v7", type: "football", color: "#c62828" },
-  tnt: { id: "tnt", name: "TNT 7v7", type: "football", color: "#6a1b9a" },
-  ua: { id: "ua", name: "UA Future Basketball", type: "basketball", color: "#f9a825" },
-  kingdom: { id: "kingdom", name: "Kingdom Hoops", type: "basketball", color: "#2e7d32" },
-  brazil: { id: "brazil", name: "Brazil International Tour", type: "international", color: "#00897b" },
-  spain: { id: "spain", name: "Spain Euro Championships", type: "international", color: "#1565c0" },
-  camp: { id: "camp", name: "Colorado Football Camp", type: "camp", color: "#ef6c00" }
-};
-
-export const events2026 = [
+const initialData = [
 
   // ===== MARCH =====
   {
     id: "mar-6-8",
-    programs: ["warren", "tnt", "kingdom"],
     title: "MOKAN / Sioux Center Spectacular / Nike Super Regionals",
+    category: "Warren 7v7",
     start: "2026-03-06",
     end: "2026-03-08",
-    conflict: "high"
+    location: "Kansas City, KS / Sioux Center, IA / Memphis, TN"
+  },
+  {
+    id: "mar-6-8-tnt",
+    title: "MOKAN / Sioux Center Spectacular / Nike Super Regionals",
+    category: "TNT 7v7",
+    start: "2026-03-06",
+    end: "2026-03-08",
+    location: "Kansas City, KS / Sioux Center, IA / Memphis, TN"
+  },
+  {
+    id: "mar-6-8-kingdom",
+    title: "Nike Super Regionals",
+    category: "Kingdom Hoops",
+    start: "2026-03-06",
+    end: "2026-03-08",
+    location: "Memphis, TN"
   },
   {
     id: "mar-14-15",
-    programs: ["tnt"],
     title: "Wild Wild West",
-    location: "Council Bluffs, IA",
+    category: "TNT 7v7",
     start: "2026-03-14",
     end: "2026-03-15",
-    conflict: "low"
+    location: "Council Bluffs, IA"
   },
   {
-    id: "mar-21-22",
-    programs: ["warren", "tnt"],
-    title: "Springfield / Capital City Clash",
+    id: "mar-21-22-warren",
+    title: "Springfield",
+    category: "Warren 7v7",
     start: "2026-03-21",
     end: "2026-03-22",
-    conflict: "medium"
+    location: "Springfield, MO"
   },
   {
-    id: "mar-28-29",
-    programs: ["warren", "tnt"],
-    title: "Omaha / March Mayhem",
+    id: "mar-21-22-tnt",
+    title: "Capital City Clash",
+    category: "TNT 7v7",
+    start: "2026-03-21",
+    end: "2026-03-22",
+    location: "Des Moines, IA"
+  },
+  {
+    id: "mar-28-29-warren",
+    title: "Omaha",
+    category: "Warren 7v7",
     start: "2026-03-28",
     end: "2026-03-29",
-    conflict: "medium"
+    location: "Omaha, NE"
+  },
+  {
+    id: "mar-28-29-tnt",
+    title: "March Mayhem",
+    category: "TNT 7v7",
+    start: "2026-03-28",
+    end: "2026-03-29",
+    location: "TBD"
   },
   {
     id: "brazil",
-    programs: ["brazil"],
     title: "Brazil International Tour",
+    category: "Brazil International Tour",
     start: "2026-03-31",
     end: "2026-04-07",
-    conflict: "blocks-all"
+    location: "Brazil"
   },
 
   // ===== APRIL =====
   {
     id: "apr-3-4",
-    programs: ["kingdom"],
     title: "Spring Tune Up",
-    location: "Des Moines, IA",
+    category: "Kingdom Hoops",
     start: "2026-04-03",
-    end: "2026-04-04"
+    end: "2026-04-04",
+    location: "Des Moines, IA"
   },
   {
-    id: "apr-11-12",
-    programs: ["tnt", "ua", "kingdom"],
-    title: "Siouxland Shootout / Spring Meltdown / Heartland Hoopfest",
+    id: "apr-11-12-tnt",
+    title: "Siouxland Shootout",
+    category: "TNT 7v7",
     start: "2026-04-11",
     end: "2026-04-12",
-    conflict: "high"
+    location: "Sioux City, IA"
   },
   {
-    id: "apr-18-19",
-    programs: ["ua", "kingdom"],
-    title: "Midwest Regionals / Nike Jr EYBL Session #1",
+    id: "apr-11-12-ua",
+    title: "Spring Meltdown",
+    category: "UA Future Basketball",
+    start: "2026-04-11",
+    end: "2026-04-12",
+    location: "TBD"
+  },
+  {
+    id: "apr-11-12-kingdom",
+    title: "Heartland Hoopfest",
+    category: "Kingdom Hoops",
+    start: "2026-04-11",
+    end: "2026-04-12",
+    location: "TBD"
+  },
+  {
+    id: "apr-18-19-ua",
+    title: "Midwest Regionals",
+    category: "UA Future Basketball",
     start: "2026-04-18",
     end: "2026-04-19",
-    conflict: "medium"
+    location: "TBD"
   },
   {
-    id: "apr-25-26",
-    programs: ["tnt", "kingdom"],
-    title: "H Town Showdown / Never Walk on the Hardwood",
+    id: "apr-18-19-kingdom",
+    title: "Nike Jr EYBL Session #1",
+    category: "Kingdom Hoops",
+    start: "2026-04-18",
+    end: "2026-04-19",
+    location: "TBD"
+  },
+  {
+    id: "apr-25-26-tnt",
+    title: "H Town Showdown",
+    category: "TNT 7v7",
     start: "2026-04-25",
     end: "2026-04-26",
-    conflict: "medium"
+    location: "TBD"
+  },
+  {
+    id: "apr-25-26-kingdom",
+    title: "Never Walk on the Hardwood",
+    category: "Kingdom Hoops",
+    start: "2026-04-25",
+    end: "2026-04-26",
+    location: "TBD"
   },
 
   // ===== MAY =====
   {
-    id: "may-2-3",
-    programs: ["tnt", "ua"],
-    title: "Back to Ballin / UA Future",
+    id: "may-2-3-tnt",
+    title: "Back to Ballin",
+    category: "TNT 7v7",
     start: "2026-05-02",
     end: "2026-05-03",
-    conflict: "medium"
+    location: "TBD"
   },
   {
-    id: "may-9-10",
-    programs: ["tnt", "kingdom"],
-    title: "Memorial Stadium / Nike Jr EYBL Session #2",
+    id: "may-2-3-ua",
+    title: "UA Future",
+    category: "UA Future Basketball",
+    start: "2026-05-02",
+    end: "2026-05-03",
+    location: "TBD"
+  },
+  {
+    id: "may-9-10-tnt",
+    title: "Memorial Stadium",
+    category: "TNT 7v7",
     start: "2026-05-09",
     end: "2026-05-10",
-    conflict: "high"
+    location: "TBD"
+  },
+  {
+    id: "may-9-10-kingdom",
+    title: "Nike Jr EYBL Session #2",
+    category: "Kingdom Hoops",
+    start: "2026-05-09",
+    end: "2026-05-10",
+    location: "TBD"
   },
   {
     id: "may-23-25",
-    programs: ["kingdom"],
     title: "Midwest Memorial Classic",
-    location: "Des Moines, IA",
+    category: "Kingdom Hoops",
     start: "2026-05-23",
-    end: "2026-05-25"
+    end: "2026-05-25",
+    location: "Des Moines, IA"
   },
 
   // ===== JUNE =====
   {
     id: "jun-6-7",
-    programs: ["kingdom"],
     title: "515 Frenzy",
+    category: "Kingdom Hoops",
     start: "2026-06-06",
-    end: "2026-06-07"
+    end: "2026-06-07",
+    location: "Des Moines, IA"
   },
   {
     id: "camp",
-    programs: ["camp"],
     title: "Colorado Football Camp",
+    category: "Colorado Football Camp",
     start: "2026-06-09",
-    end: "2026-06-10"
+    end: "2026-06-10",
+    location: "Boulder, CO"
   },
   {
     id: "jun-13-14",
-    programs: ["kingdom"],
     title: "Heat Up the Hardwood",
+    category: "Kingdom Hoops",
     start: "2026-06-13",
-    end: "2026-06-14"
+    end: "2026-06-14",
+    location: "TBD"
   },
   {
     id: "spain",
-    programs: ["spain"],
     title: "Euro World Championships",
+    category: "Spain Euro Championships",
     start: "2026-06-17",
     end: "2026-06-22",
-    conflict: "blocks-all"
+    location: "Spain"
   },
   {
     id: "jun-19-21",
-    programs: ["ua"],
     title: "UA Finals",
+    category: "UA Future Basketball",
     start: "2026-06-19",
-    end: "2026-06-21"
+    end: "2026-06-21",
+    location: "TBD"
   },
   {
     id: "jun-27-28",
-    programs: ["kingdom"],
     title: "Summer Showcase",
+    category: "Kingdom Hoops",
     start: "2026-06-27",
-    end: "2026-06-28"
+    end: "2026-06-28",
+    location: "TBD"
   },
 
   // ===== JULY =====
   {
     id: "jul-3-5",
-    programs: ["ua"],
     title: "River Cities",
+    category: "UA Future Basketball",
     start: "2026-07-03",
-    end: "2026-07-05"
+    end: "2026-07-05",
+    location: "TBD"
   },
   {
     id: "jul-9-11",
-    programs: ["kingdom"],
     title: "Hardwood Classic Session #1",
+    category: "Kingdom Hoops",
     start: "2026-07-09",
-    end: "2026-07-11"
+    end: "2026-07-11",
+    location: "TBD"
   },
   {
-    id: "jul-17-19",
-    programs: ["ua", "tnt"],
-    title: "July Jam / State Championships",
+    id: "jul-17-19-ua",
+    title: "July Jam",
+    category: "UA Future Basketball",
     start: "2026-07-17",
     end: "2026-07-19",
-    conflict: "medium"
+    location: "TBD"
+  },
+  {
+    id: "jul-17-19-tnt",
+    title: "State Championships",
+    category: "TNT 7v7",
+    start: "2026-07-17",
+    end: "2026-07-19",
+    location: "TBD"
   },
   {
     id: "jul-25-26",
-    programs: ["kingdom"],
     title: "Gym Rats Summer Finale",
+    category: "Kingdom Hoops",
     start: "2026-07-25",
-    end: "2026-07-26"
+    end: "2026-07-26",
+    location: "TBD"
   },
   {
-    id: "jul-30-aug-2",
-    programs: ["ua", "kingdom"],
+    id: "jul-30-aug-2-ua",
     title: "MAYB Nationals",
+    category: "UA Future Basketball",
     start: "2026-07-30",
     end: "2026-08-02",
-    conflict: "shared"
+    location: "TBD"
+  },
+  {
+    id: "jul-30-aug-2-kingdom",
+    title: "MAYB Nationals",
+    category: "Kingdom Hoops",
+    start: "2026-07-30",
+    end: "2026-08-02",
+    location: "TBD"
   }
 ];

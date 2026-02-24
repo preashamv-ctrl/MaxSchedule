@@ -63,6 +63,15 @@ function init() {
 }
 
 function loadData() {
+    // Data version — bump this when data.js changes to bust localStorage cache
+    const DATA_VERSION = '2026-02-23-v2';
+    const storedVersion = localStorage.getItem('dataVersion');
+    if (storedVersion !== DATA_VERSION) {
+        localStorage.removeItem('scheduleEvents');
+        localStorage.removeItem('scheduleCategories');
+        localStorage.setItem('dataVersion', DATA_VERSION);
+    }
+
     // Load Events
     const storedEvents = localStorage.getItem('scheduleEvents');
     if (storedEvents) {
