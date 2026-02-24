@@ -32,6 +32,10 @@ const Elements = {
 
     // Event Modal
     addEventBtn: document.getElementById('addEventBtn'),
+
+    // Export
+    exportDataBtn: document.getElementById('exportDataBtn'),
+
     eventModal: document.getElementById('eventModal'),
     closeModal: document.querySelector('#eventModal .close-modal'),
     cancelBtn: document.getElementById('cancelBtn'),
@@ -128,6 +132,11 @@ function setupEventListeners() {
     Elements.closeCategoryModal.addEventListener('click', closeCategoryModal);
     Elements.closeCategoryBtn.addEventListener('click', closeCategoryModal);
     Elements.addNewCategoryBtn.addEventListener('click', addNewCategory);
+
+    // Export Data
+    if (Elements.exportDataBtn) {
+        Elements.exportDataBtn.addEventListener('click', exportScheduleData);
+    }
 
     // Close modals on outside click
     window.addEventListener('click', (e) => {
@@ -504,6 +513,26 @@ function handleFormSubmit(e) {
     saveData();
     closeModal();
     render();
+}
+
+// Export Feature
+function exportScheduleData() {
+    // We want to export the CURRENT events state
+    const dataStr = JSON.stringify(State.events, null, 2);
+    const fileContent = `const initialData = ${dataStr};\n`;
+
+    const blob = new Blob([fileContent], { type: 'text/javascript' });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'data.js';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    alert('Started download of "data.js".\n\nTo make your changes permanent for everyone:\n1. Rename this downloaded file to "data.js".\n2. Replace the old "data.js" in your project folder with this new one.\n3. Push the changes to GitHub.');
 }
 
 // Helpers
